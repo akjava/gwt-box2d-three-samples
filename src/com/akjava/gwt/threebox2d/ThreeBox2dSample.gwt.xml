@@ -3,6 +3,11 @@
 <module rename-to="threebox2d">
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="org.jbox2d.GwtBox2D" />
+	<inherits name="com.akjava.gwt.lib.Commons"/>
+	<inherits name="com.akjava.gwt.three.Three"/>
+	<inherits name="com.akjava.gwt.stats.Stats"/>
+		<inherits name='com.github.gwtbootstrap.Bootstrap' />
+<set-property name="bootstrap.responsiveDesign" value="false"/>
 	<source path="client" />
 	<entry-point class="com.akjava.gwt.threebox2d.client.Main" />
 </module>
