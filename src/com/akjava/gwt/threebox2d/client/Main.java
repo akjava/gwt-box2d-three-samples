@@ -27,7 +27,7 @@ import com.akjava.gwt.three.client.materials.MeshBasicMaterialBuilder;
 import com.akjava.gwt.three.client.renderers.WebGLRenderer;
 import com.akjava.gwt.three.client.scenes.Scene;
 import com.akjava.gwt.three.client.textures.Texture;
-import com.akjava.gwt.threebox2d.client.simple.SimpleDemo;
+import com.akjava.gwt.threebox2d.client.demo.simple.SimpleDemo;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
@@ -91,6 +91,7 @@ public class Main implements EntryPoint {
 		renderer.gwtSetType(type);
 		focusPanel.add(div);
 	}
+	public int scale=10;
 	@Override
 	public void onModuleLoad() {
 		
@@ -325,14 +326,15 @@ Button init=new Button("initialize",new ClickHandler() {
 	private void drawBody(Body body) {
 		Object3D obj=threeObjects.get(body);
 		if(obj==null){
-		Canvas bodyCanvas=createCanvasFill(body,"#800",true);
+		Canvas bodyCanvas=createBodyCanvas(body,"#800",true);
 		obj=createCanvasObject(bodyCanvas,bodyCanvas.getCoordinateSpaceWidth(),bodyCanvas.getCoordinateSpaceHeight());
 		threeObjects.put(body, obj);
 		LogUtils.log("create object:"+bodyCanvas.getCoordinateSpaceWidth()+","+bodyCanvas.getCoordinateSpaceHeight());
 		objRoot.add(obj);
+		//obj.setScale(scale, scale, scale);
 		}
 		Vec2 pos=body.getPosition();
-		obj.setPosition(pos.x, -pos.y, 0);
+		obj.setPosition(pos.x*scale, -pos.y*scale, 0);
 		obj.getRotation().setZ(-body.getAngle());
 		
 	}
@@ -408,12 +410,12 @@ Button init=new Button("initialize",new ClickHandler() {
 	
 
 	public void drawShape(Body body){
-		Canvas bodyCanvas=createCanvasFill(body,"#800",true);
+		Canvas bodyCanvas=createBodyCanvas(body,"#800",true);
 		Vec2 pos=body.getPosition();
 		//canvas.getContext2d().drawImage(bodyCanvas.getCanvasElement(), pos.x-(float)bodyCanvas.getCoordinateSpaceWidth()/2, pos.y-(float)bodyCanvas.getCoordinateSpaceHeight()/2);
 	}
 	
-	public Canvas createCanvasFill(Body body,String style,boolean stroke){
+	public Canvas createBodyCanvas(Body body,String style,boolean stroke){
 		List<PolygonShape> polygons=new ArrayList<PolygonShape>();
 		for(Fixture fixture=body.getFixtureList();fixture!=null;fixture=fixture.getNext()){
 			ShapeType type=fixture.getType();
@@ -425,12 +427,12 @@ Button init=new Button("initialize",new ClickHandler() {
 		}
 		}
 		AABB aabb=calculateBox(polygons);
-		int w=(int) (aabb.upperBound.x-aabb.lowerBound.x);
-		int h=(int) (aabb.upperBound.y-aabb.lowerBound.y);
+		int w=(int) (aabb.upperBound.x-aabb.lowerBound.x)*scale;
+		int h=(int) (aabb.upperBound.y-aabb.lowerBound.y)*scale;
 		if(w<=0){
 			w=1;
 		}
-		if(h<0){
+		if(h<=0){
 			h=1;
 		}
 		float offx=aabb.lowerBound.x;
@@ -443,11 +445,11 @@ Button init=new Button("initialize",new ClickHandler() {
 				PolygonShape poly=(PolygonShape) fixture.getShape();
 				int size=poly.m_vertexCount;
 				context.beginPath();
-				context.moveTo(poly.m_vertices[0].x-offx, poly.m_vertices[0].y-offy);
+				context.moveTo((poly.m_vertices[0].x-offx)*scale, (poly.m_vertices[0].y-offy)*scale);
 				for(int i=1;i<size;i++){
-					context.lineTo(poly.m_vertices[i].x-offx, poly.m_vertices[i].y-offy);
+					context.lineTo((poly.m_vertices[i].x-offx)*scale, (poly.m_vertices[i].y-offy)*scale);
 				}
-				context.lineTo(poly.m_vertices[0].x-offx, poly.m_vertices[0].y-offy);
+				context.lineTo((poly.m_vertices[0].x-offx)*scale, (poly.m_vertices[0].y-offy)*scale);
 				context.closePath();
 				if(stroke){
 					context.setStrokeStyle(style);
