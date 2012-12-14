@@ -37,7 +37,10 @@ public class MainUi extends Composite  {
 @UiField
 ButtonGroup renderer;
 @UiField
-VerticalPanel center,bottom;
+VerticalPanel center,bottom,controler;
+public VerticalPanel getControler() {
+	return controler;
+}
 public VerticalPanel getBottom() {
 	return bottom;
 }

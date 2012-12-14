@@ -4,6 +4,7 @@ import org.jbox2d.dynamics.World;
 
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.user.client.ui.Widget;
 
 public interface Box2dDemo {
 	public void initialize();
@@ -14,4 +15,5 @@ public interface Box2dDemo {
 	public String getName();
 	
 	public World getWorld();
+	public Widget createControler();
 }

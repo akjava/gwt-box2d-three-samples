@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.World;
@@ -14,10 +15,20 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 public abstract class AbstractDemo implements Box2dDemo{
 protected  World world;
 
+protected float gravityX=0;
+protected float gravityY=10;
 @Override
 public World getWorld() {
 	return world;
 }
+@Override
+public void initialize() {
+	clearItems();
+	Vec2 gravity=new Vec2(gravityX,gravityY);
+	world = new World(gravity, true);//TODO share world
+	createItems();
+}
+public abstract void createItems();
 
 public void clearItems(){
 if(world!=null){

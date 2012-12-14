@@ -7,12 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbox2d.collision.AABB;
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.joints.DistanceJoint;
+import org.jbox2d.dynamics.joints.Joint;
 
 import com.akjava.gwt.lib.client.CanvasUtils;
 import com.akjava.gwt.lib.client.LogUtils;
@@ -28,6 +32,7 @@ import com.akjava.gwt.three.client.renderers.WebGLRenderer;
 import com.akjava.gwt.three.client.scenes.Scene;
 import com.akjava.gwt.three.client.textures.Texture;
 import com.akjava.gwt.threebox2d.client.demo.simple.SimpleDemo;
+import com.akjava.gwt.threebox2d.client.demo.spring.SpringDemo;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
@@ -48,7 +53,6 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ValueListBox;
 
 public class Main implements EntryPoint {
@@ -70,7 +74,10 @@ public class Main implements EntryPoint {
 	int height=400;
 	Object3D objRoot;
 	Map<Body,Object3D> threeObjects=new HashMap<Body,Object3D>();
+	Map<Joint,Object3D> threeJoints=new HashMap<Joint,Object3D>();
 	List<Box2dDemo> demos=new ArrayList<Box2dDemo>();
+	
+	
 	//private String currentRendererType="css3d";
 	private void switchRenderer(String type){
 		init();
@@ -100,7 +107,10 @@ public class Main implements EntryPoint {
 		main = new MainUi();
 		RootLayoutPanel.get().add(main);
 		//RootPanel.get().add(main);
+		demos.add(new SpringDemo());
+		
 		demos.add(new SimpleDemo());
+		
 		
 		//demos.add(new CarDemo());
 		//demos.add(new ImageWaveDemo());
@@ -124,7 +134,7 @@ public class Main implements EntryPoint {
 		scene.add(camera);
 		camera.getPosition().setZ(700);
 		camera.getPosition().setX(0);
-		camera.getPosition().setY(-150);
+		camera.getPosition().setY(-200);
 		
 		
 		light = THREE.PointLight(0xffffff);
@@ -214,7 +224,6 @@ public class Main implements EntryPoint {
 		timer.scheduleRepeating(1000/60);
 		
 		
-		
 		updateCanvas();
 		
 
@@ -253,7 +262,7 @@ public class Main implements EntryPoint {
 	buttons.add(demosList);
 	
 	apeDemo=demos.get(0);
-	apeDemo.initialize();
+	
 	
 	
 Button init=new Button("initialize",new ClickHandler() {
@@ -268,7 +277,7 @@ Button init=new Button("initialize",new ClickHandler() {
 		buttons.add(init);
 		
 		
-		
+		init();
 	}
 	
 	long last;
@@ -277,18 +286,19 @@ Button init=new Button("initialize",new ClickHandler() {
 	public static Map<Object,Integer> colorMap=new HashMap<Object, Integer>();
 	
 	private void init(){
-		/*
-		 * initialize faild.car something faild
-		 */
+		
+		main.getControler().clear();
 		if(apeDemo!=null){
 		apeDemo.initialize();
+		if(apeDemo.createControler()!=null){
+			main.getControler().add(apeDemo.createControler());
+		}
 		}
 		
 		threeObjects.clear();
 		
 		
 		if(renderer.gwtGetType().equals("css3d")){
-		LogUtils.log("renderer is css3d and initialize");
 		((CSS3DRenderer)renderer).gwtClear();
 		}
 		
@@ -313,6 +323,9 @@ Button init=new Button("initialize",new ClickHandler() {
 		for(Body b=world.getBodyList();b!=null;b=b.getNext()){
 			drawBody(b);
 		}
+		for(Joint joint=world.getJointList();joint!=null;joint=joint.getNext()){
+			drawJoint(joint);
+		}
 		
 		
 		renderer.render(scene, camera);
@@ -322,14 +335,43 @@ Button init=new Button("initialize",new ClickHandler() {
 		
 	}
 	
-	
+	Vec2 jointA=new Vec2();
+	Vec2 jointB=new Vec2();
+	Vec2 jointCenter=new Vec2();
+	private void drawJoint(Joint joint) {
+		joint.getAnchorA(jointA);
+		joint.getAnchorB(jointB);
+		
+		float radian=Box2DUtils.calculateRadian(jointA, jointB);
+		Box2DUtils.getCenter(jointA, jointB,jointCenter);
+		
+		Object3D obj=threeJoints.get(joint);
+		if(obj==null){
+			Canvas dotCanvas=CanvasUtils.createCanvas(1, 1);
+			dotCanvas.getContext2d().setFillStyle("#008");
+			dotCanvas.getContext2d().fillRect(0, 0, 1, 1);
+			obj=createCanvasObject(dotCanvas,dotCanvas.getCoordinateSpaceWidth(),dotCanvas.getCoordinateSpaceHeight());
+			threeJoints.put(joint, obj);
+			objRoot.add(obj);
+		}
+		
+		if(joint instanceof DistanceJoint){
+			float length=((DistanceJoint)joint).getLength();
+			obj.setScale(length*scale, 1, 1);
+		}
+		
+		
+		obj.setPosition(jointCenter.x*scale, -jointCenter.y*scale, 0);
+		obj.getRotation().setZ(-radian);
+		
+	}
 	private void drawBody(Body body) {
 		Object3D obj=threeObjects.get(body);
 		if(obj==null){
 		Canvas bodyCanvas=createBodyCanvas(body,"#800",true);
 		obj=createCanvasObject(bodyCanvas,bodyCanvas.getCoordinateSpaceWidth(),bodyCanvas.getCoordinateSpaceHeight());
 		threeObjects.put(body, obj);
-		LogUtils.log("create object:"+bodyCanvas.getCoordinateSpaceWidth()+","+bodyCanvas.getCoordinateSpaceHeight());
+		//LogUtils.log("create object:"+bodyCanvas.getCoordinateSpaceWidth()+","+bodyCanvas.getCoordinateSpaceHeight());
 		objRoot.add(obj);
 		//obj.setScale(scale, scale, scale);
 		}
@@ -364,6 +406,8 @@ Button init=new Button("initialize",new ClickHandler() {
 					basicMaterial.build());
 		}else{
 			Image img=new Image(canvas.toDataUrl());
+			img.setSize(w+"px", h+"px");
+			//LogUtils.log("img:"+img.getWidth()+":"+img.getHeight());
 			object=CSS3DObject.createObject(img.getElement());
 		}
 		return object;
@@ -416,17 +460,25 @@ Button init=new Button("initialize",new ClickHandler() {
 	}
 	
 	public Canvas createBodyCanvas(Body body,String style,boolean stroke){
-		List<PolygonShape> polygons=new ArrayList<PolygonShape>();
+		List<Shape> shapes=new ArrayList<Shape>();
 		for(Fixture fixture=body.getFixtureList();fixture!=null;fixture=fixture.getNext()){
 			ShapeType type=fixture.getType();
 		if(type==ShapeType.POLYGON){
-			polygons.add((PolygonShape) fixture.getShape());
+			
+			shapes.add(fixture.getShape());
 			}
-		else{
+		else if(type==ShapeType.CIRCLE){
+			
+			CircleShape circle=(CircleShape) fixture.getShape();
+			float radius=circle.m_radius;
 			//TODO support circle
+			PolygonShape p=new PolygonShape();
+			p.setAsBox(radius, radius);
+			shapes.add(fixture.getShape());
+			
 		}
 		}
-		AABB aabb=calculateBox(polygons);
+		AABB aabb=calculateBox(shapes);
 		int w=(int) (aabb.upperBound.x-aabb.lowerBound.x)*scale;
 		int h=(int) (aabb.upperBound.y-aabb.lowerBound.y)*scale;
 		if(w<=0){
@@ -438,7 +490,10 @@ Button init=new Button("initialize",new ClickHandler() {
 		float offx=aabb.lowerBound.x;
 		float offy=aabb.lowerBound.y;
 		Canvas canvas=CanvasUtils.createCanvas(w, h);
+		
 		Context2d context=canvas.getContext2d();
+		context.setFillStyle("#333");
+		//context.fillRect(0, 0, canvas.getCoordinateSpaceWidth(), canvas.getCoordinateSpaceHeight());
 		for(Fixture fixture=body.getFixtureList();fixture!=null;fixture=fixture.getNext()){
 			ShapeType type=fixture.getType();
 			if(type==ShapeType.POLYGON){
@@ -458,6 +513,20 @@ Button init=new Button("initialize",new ClickHandler() {
 					context.setFillStyle(style);
 					context.fill();
 				}
+			}else if(type==ShapeType.CIRCLE){
+				LogUtils.log("draw circle");
+				CircleShape circle=(CircleShape) fixture.getShape();
+				float radius=circle.m_radius;
+				context.beginPath();
+				context.arc((float)w/2, (float)h/2, radius*scale, 0, 360);
+				context.closePath();
+				if(stroke){
+					context.setStrokeStyle(style);
+					context.stroke();
+				}else{
+					context.setFillStyle(style);
+					context.fill();
+				}
 			}
 			
 			}
@@ -467,13 +536,26 @@ Button init=new Button("initialize",new ClickHandler() {
 	}
 	
 	//calculate multiple
-	public AABB calculateBox(List<PolygonShape> polygons){
+	public AABB calculateBox(List<Shape> polygons){
 		List<Vec2> points=new ArrayList<Vec2>();
-		for(PolygonShape polygon:polygons){
+		for(Shape shape:polygons){
+			if(shape.getType()==ShapeType.POLYGON){
+				PolygonShape polygon=(PolygonShape) shape;
 			int vertexCount=polygon.m_vertexCount;
 			for (int i = 0; i < vertexCount; ++i) {
 				points.add(polygon.m_vertices[i]);
 			}
+			}else if(shape.getType()==ShapeType.CIRCLE){
+				CircleShape circle=(CircleShape)shape;
+				float radius=circle.m_radius;
+				points.add(new Vec2(-radius, -radius));
+				points.add(new Vec2(radius, -radius));
+				points.add(new Vec2(-radius, radius));
+				points.add(new Vec2(radius, radius));
+			}
+		}
+		if(points.size()==0){
+			return new AABB();
 		}
 		
 		float minX=points.get(0).x;

@@ -24,6 +24,9 @@ xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.githu
 <g:VerticalPanel ui:field="center" width="600px" height="400px"></g:VerticalPanel>
 <g:HorizontalPanel verticalAlignment="MIDDLE" ui:field="buttons">
 </g:HorizontalPanel>
+<g:VerticalPanel ui:field="controler">
+</g:VerticalPanel>
+
 </g:VerticalPanel>
 
 <div align="center">

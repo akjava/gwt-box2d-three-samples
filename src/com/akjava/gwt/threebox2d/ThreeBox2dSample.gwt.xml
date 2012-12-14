@@ -10,4 +10,8 @@
 <set-property name="bootstrap.responsiveDesign" value="false"/>
 	<source path="client" />
 	<entry-point class="com.akjava.gwt.threebox2d.client.Main" />
+	
+		
+	 <set-property name="user.agent" value="safari"/>
+	<!--  for test  -->
 </module>
