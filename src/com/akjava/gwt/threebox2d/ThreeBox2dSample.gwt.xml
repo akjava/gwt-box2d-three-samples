@@ -7,11 +7,11 @@
 	<inherits name="com.akjava.gwt.three.Three"/>
 	<inherits name="com.akjava.gwt.stats.Stats"/>
 		<inherits name='com.github.gwtbootstrap.Bootstrap' />
-<set-property name="bootstrap.responsiveDesign" value="false"/>
+<set-property name="bootstrap.responsiveDesign" value="true"/>
 	<source path="client" />
 	<entry-point class="com.akjava.gwt.threebox2d.client.Main" />
 	
-		
+		<!--
 	 <set-property name="user.agent" value="safari"/>
-	<!--  for test  -->
+	  for test  -->
 </module>

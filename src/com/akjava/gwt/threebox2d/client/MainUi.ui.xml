@@ -10,14 +10,13 @@ xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.githu
 
 <b:Navbar>
     <b:Brand>Demo</b:Brand>
-    <g:VerticalPanel>
 <b:Heading size="5">Three.js Renderer</b:Heading>
 <b:ButtonGroup toggle="radio" ui:field="renderer">
     <b:Button ui:field="webglButton">WebGL</b:Button>
     <b:Button ui:field="canvasButton">Canvas</b:Button>
     <b:Button ui:field="css3dButton">Css3D</b:Button>
 </b:ButtonGroup>
-</g:VerticalPanel>
+
 </b:Navbar>
 
 <g:VerticalPanel>
