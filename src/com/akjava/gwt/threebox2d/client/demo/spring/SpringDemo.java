@@ -174,9 +174,9 @@ public class SpringDemo extends AbstractDemo{
 		
 		if(src==null){
 			loading=true;
-			drawCanvas=CanvasUtils.createCanvas(400, 400);
+			drawCanvas=CanvasUtils.createCanvas(300, 300);
 			drawCanvas.getContext2d().fillRect(0, 0, drawCanvas.getCoordinateSpaceWidth(), drawCanvas.getCoordinateSpaceHeight());
-			controler.add(drawCanvas);
+			controler.insert(drawCanvas,0);
 			//RootPanel.get().add(drawCanvas);
 			
 			

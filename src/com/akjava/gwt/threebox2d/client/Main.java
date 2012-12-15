@@ -70,8 +70,8 @@ public class Main implements EntryPoint {
 	private WebGLRenderer renderer;
 
 	private Scene scene;
-	int width=600;
-	int height=400;
+	int width=400;
+	int height=350;
 	Object3D objRoot;
 	Map<Body,Object3D> threeObjects=new HashMap<Body,Object3D>();
 	Map<Joint,Object3D> threeJoints=new HashMap<Joint,Object3D>();
@@ -265,7 +265,7 @@ public class Main implements EntryPoint {
 	
 	
 	
-Button init=new Button("initialize",new ClickHandler() {
+Button init=new Button("Restart",new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {

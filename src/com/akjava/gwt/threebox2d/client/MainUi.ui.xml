@@ -10,23 +10,28 @@ xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.githu
 
 <b:Navbar>
     <b:Brand>Demo</b:Brand>
+    <b:Nav>
 <b:Heading size="5">Three.js Renderer</b:Heading>
 <b:ButtonGroup toggle="radio" ui:field="renderer">
     <b:Button ui:field="webglButton">WebGL</b:Button>
     <b:Button ui:field="canvasButton">Canvas</b:Button>
     <b:Button ui:field="css3dButton">Css3D</b:Button>
 </b:ButtonGroup>
-
-</b:Navbar>
-
-<g:VerticalPanel>
-<g:VerticalPanel ui:field="center" width="600px" height="400px"></g:VerticalPanel>
+</b:Nav>
+<b:Nav>
+<b:Heading size="5">Demo</b:Heading>
 <g:HorizontalPanel verticalAlignment="MIDDLE" ui:field="buttons">
 </g:HorizontalPanel>
+</b:Nav>
+</b:Navbar>
+
+<g:HorizontalPanel>
+<g:VerticalPanel ui:field="center" width="400px" height="350px"></g:VerticalPanel>
+
 <g:VerticalPanel ui:field="controler">
 </g:VerticalPanel>
 
-</g:VerticalPanel>
+</g:HorizontalPanel>
 
 <div align="center">
 	Powered by <a href="https://github.com/mrdoob/three.js/">Three.js</a>,<a href="http://code.google.com/p/playn/">GWTBox2d</a>,<a href="http://gwtbootstrap.github.com/">GWT-Bootstrap</a>
