@@ -73,7 +73,7 @@ public class SpringDemo extends AbstractDemo{
 		
 		controler=new VerticalPanel();
 		HorizontalPanel buttons=new HorizontalPanel();
-		controler.add(buttons);
+		
 		Button force=new Button("force",new ClickHandler() {
 			
 			@Override
@@ -87,6 +87,8 @@ public class SpringDemo extends AbstractDemo{
 		if(drawCanvas!=null){
 			controler.add(drawCanvas);
 		}
+		controler.add(buttons);
+		
 	}
 	public static String toString(DistanceJoint joint){
 		String ret="[distance-joint]length="+joint.getLength()+" ";

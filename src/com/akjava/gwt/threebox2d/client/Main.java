@@ -70,7 +70,7 @@ public class Main implements EntryPoint {
 	private WebGLRenderer renderer;
 
 	private Scene scene;
-	int width=400;
+	int width=600;
 	int height=350;
 	Object3D objRoot;
 	Map<Body,Object3D> threeObjects=new HashMap<Body,Object3D>();
@@ -251,9 +251,9 @@ public class Main implements EntryPoint {
 		@Override
 		public void onValueChange(ValueChangeEvent<Box2dDemo> event) {
 			
-			init();//remove
+			
 			apeDemo=event.getValue();
-			apeDemo.initialize();
+			init();//remove
 		}
 	});
 	demosList.setValue(demos.get(0));
@@ -288,12 +288,6 @@ Button init=new Button("Restart",new ClickHandler() {
 	private void init(){
 		
 		main.getControler().clear();
-		if(apeDemo!=null){
-		apeDemo.initialize();
-		if(apeDemo.createControler()!=null){
-			main.getControler().add(apeDemo.createControler());
-		}
-		}
 		
 		threeObjects.clear();
 		
@@ -309,8 +303,16 @@ Button init=new Button("Restart",new ClickHandler() {
 		objRoot.setPosition(-width/2, 0, 0);
 		scene.add(objRoot);
 		
-		scene.add(light);		
-		//LogUtils.log("renderer:"+renderer.getCameraElement().getChildNodes().getLength());
+		scene.add(light);	
+		
+		
+		if(apeDemo!=null){
+			apeDemo.initialize();
+			if(apeDemo.createControler()!=null){
+				main.getControler().add(apeDemo.createControler());
+			}
+			}
+		
 	}
 	
 	private void updateCanvas() {
@@ -347,9 +349,9 @@ Button init=new Button("Restart",new ClickHandler() {
 		
 		Object3D obj=threeJoints.get(joint);
 		if(obj==null){
-			Canvas dotCanvas=CanvasUtils.createCanvas(1, 1);
+			Canvas dotCanvas=CanvasUtils.createCanvas(1, 2);
 			dotCanvas.getContext2d().setFillStyle("#008");
-			dotCanvas.getContext2d().fillRect(0, 0, 1, 1);
+			dotCanvas.getContext2d().fillRect(0, 0, 1, 2);
 			obj=createCanvasObject(dotCanvas,dotCanvas.getCoordinateSpaceWidth(),dotCanvas.getCoordinateSpaceHeight());
 			threeJoints.put(joint, obj);
 			objRoot.add(obj);
