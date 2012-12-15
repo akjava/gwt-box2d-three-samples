@@ -34,7 +34,8 @@ xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.githu
 </g:HorizontalPanel>
 
 <div align="center">
-	Powered by <a href="https://github.com/mrdoob/three.js/">Three.js</a>/<a href="https://github.com/akjava/gwt-three.js-test">GWT wrapper</a>,<a href="http://box2d.org/">Box2D</a>/<a href="http://www.jbox2d.org/">JBox2D</a>/<a href="http://code.google.com/p/playn/">GWTBox2D</a>,<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>/<a href="http://gwtbootstrap.github.com/">GWT-Bootstrap</a>
+	<a href="https://github.com/akjava/gwt-box2d-three-samples">Github-ProjectPage</a>  Powered by <a href="https://github.com/mrdoob/three.js/">Three.js</a>/<a href="https://github.com/akjava/gwt-three.js-test">GWT wrapper</a>,<a href="http://box2d.org/">Box2D</a>/<a href="http://www.jbox2d.org/">JBox2D</a>/<a href="http://code.google.com/p/playn/">GWTBox2D</a>,<a href="http://twitter.github.com/bootstrap/">Bootstrap</a>/<a href="http://gwtbootstrap.github.com/">GWT-Bootstrap</a>
+	
 	</div>	
 <g:VerticalPanel ui:field="bottom">
 </g:VerticalPanel>
