@@ -357,7 +357,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		
 		Object3D obj=threeJoints.get(joint);
 		if(obj==null){
-			Canvas dotCanvas=CanvasUtils.createCanvas(1, 2);
+			Canvas dotCanvas=CanvasUtils.createCanvas(1, 2);//to bold
 			dotCanvas.getContext2d().setFillStyle("#008");
 			dotCanvas.getContext2d().fillRect(0, 0, 1, 2);
 			obj=createCanvasObject(dotCanvas,dotCanvas.getCoordinateSpaceWidth(),dotCanvas.getCoordinateSpaceHeight());
@@ -367,7 +367,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		
 		if(joint instanceof DistanceJoint){
 			float length=((DistanceJoint)joint).getLength();
-			obj.setScale(length*scale, 1, 1);
+			obj.setScale(length*scale/2, 1, 1);
 		}
 		
 		
