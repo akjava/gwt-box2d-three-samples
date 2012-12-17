@@ -31,11 +31,13 @@ import com.akjava.gwt.three.client.materials.MeshBasicMaterialBuilder;
 import com.akjava.gwt.three.client.renderers.WebGLRenderer;
 import com.akjava.gwt.three.client.scenes.Scene;
 import com.akjava.gwt.three.client.textures.Texture;
+import com.akjava.gwt.threebox2d.client.demo.EdgeDemo;
 import com.akjava.gwt.threebox2d.client.demo.simple.SimpleDemo;
 import com.akjava.gwt.threebox2d.client.demo.spring.SpringDemo;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -54,6 +56,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ValueListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class Main implements EntryPoint {
 
@@ -107,6 +110,7 @@ public class Main implements EntryPoint {
 		main = new MainUi();
 		RootLayoutPanel.get().add(main);
 		//RootPanel.get().add(main);
+		demos.add(new EdgeDemo());
 		demos.add(new SpringDemo());
 		
 		demos.add(new SimpleDemo());
@@ -132,7 +136,9 @@ public class Main implements EntryPoint {
 		
 		camera = THREE.PerspectiveCamera(35,(double)width/height,.1,10000);
 		scene.add(camera);
-		camera.getPosition().setZ(700);
+		//camera.getPosition().setZ(700);
+		camera.getPosition().setZ(1000);
+		
 		camera.getPosition().setX(0);
 		camera.getPosition().setY(-200);
 		
@@ -294,6 +300,8 @@ Button init=new Button("Restart",new ClickHandler() {
 		
 		if(renderer.gwtGetType().equals("css3d")){
 		((CSS3DRenderer)renderer).gwtClear();
+		//renderer.getDomElement().getStyle().setPosition(Position.ABSOLUTE);
+		//renderer.getDomElement().getStyle().setTop(0,Unit.PX);
 		}
 		
 		scene = THREE.Scene();
@@ -407,10 +415,12 @@ Button init=new Button("Restart",new ClickHandler() {
 			object=THREE.Mesh(THREE.PlaneGeometry(w, h), 
 					basicMaterial.build());
 		}else{
+			VerticalPanel v=new VerticalPanel();
+			v.setSize(w+"px", h+"px");
 			Image img=new Image(canvas.toDataUrl());
-			img.setSize(w+"px", h+"px");
+			v.add(img);
 			//LogUtils.log("img:"+img.getWidth()+":"+img.getHeight());
-			object=CSS3DObject.createObject(img.getElement());
+			object=CSS3DObject.createObject(v.getElement());
 		}
 		return object;
 	}
@@ -480,21 +490,27 @@ Button init=new Button("Restart",new ClickHandler() {
 			
 		}
 		}
+		//TODO swap y-cordinate
 		AABB aabb=calculateBox(shapes);
-		int w=(int) (aabb.upperBound.x-aabb.lowerBound.x)*scale;
-		int h=(int) (aabb.upperBound.y-aabb.lowerBound.y)*scale;
+		int w=(int) Math.max(Math.abs(aabb.upperBound.x),Math.abs(aabb.lowerBound.x))*2*scale;
+		int h=(int) Math.max(Math.abs(aabb.upperBound.y),Math.abs(aabb.lowerBound.y))*2*scale;
 		if(w<=0){
 			w=1;
 		}
 		if(h<=0){
 			h=1;
 		}
-		float offx=aabb.lowerBound.x;
-		float offy=aabb.lowerBound.y;
+		//should totally change w+h;
+		float offx=w/2;
+		float offy=h/2;
 		Canvas canvas=CanvasUtils.createCanvas(w, h);
 		
+		
+		//LogUtils.log("canvas created:"+canvas.getCoordinateSpaceWidth()+","+canvas.getCoordinateSpaceHeight());
+		
 		Context2d context=canvas.getContext2d();
-		context.setFillStyle("#333");
+		context.setLineWidth(2);
+		context.setFillStyle("#eee");
 		//context.fillRect(0, 0, canvas.getCoordinateSpaceWidth(), canvas.getCoordinateSpaceHeight());
 		for(Fixture fixture=body.getFixtureList();fixture!=null;fixture=fixture.getNext()){
 			ShapeType type=fixture.getType();
@@ -502,11 +518,21 @@ Button init=new Button("Restart",new ClickHandler() {
 				PolygonShape poly=(PolygonShape) fixture.getShape();
 				int size=poly.m_vertexCount;
 				context.beginPath();
-				context.moveTo((poly.m_vertices[0].x-offx)*scale, (poly.m_vertices[0].y-offy)*scale);
+				float px=(poly.m_vertices[0].x)*scale+offx;
+				float py=(poly.m_vertices[0].y*1)*scale+offy;
+				//LogUtils.log("moveTo:"+px+","+py);
+				context.moveTo(px, py);
 				for(int i=1;i<size;i++){
-					context.lineTo((poly.m_vertices[i].x-offx)*scale, (poly.m_vertices[i].y-offy)*scale);
+					px=(poly.m_vertices[i].x)*scale+offx;
+					py=(poly.m_vertices[i].y*1)*scale+offy;
+					//LogUtils.log("lineTo:"+px+","+py);
+					context.lineTo(px,py );
 				}
-				context.lineTo((poly.m_vertices[0].x-offx)*scale, (poly.m_vertices[0].y-offy)*scale);
+				px=(poly.m_vertices[0].x)*scale+offx;
+				py=(poly.m_vertices[0].y*1)*scale+offy;
+				//LogUtils.log("lineTo:"+px+","+py);
+				context.lineTo(px,py);
+				
 				context.closePath();
 				if(stroke){
 					context.setStrokeStyle(style);
@@ -516,7 +542,7 @@ Button init=new Button("Restart",new ClickHandler() {
 					context.fill();
 				}
 			}else if(type==ShapeType.CIRCLE){
-				LogUtils.log("draw circle");
+				//LogUtils.log("draw circle");
 				CircleShape circle=(CircleShape) fixture.getShape();
 				float radius=circle.m_radius;
 				context.beginPath();
