@@ -53,6 +53,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -82,7 +83,7 @@ public class Main implements EntryPoint {
 	//private String currentRendererType="css3d";
 	private void switchRenderer(String type){
 		init();
-		if(renderer.gwtGetType().equals(type)){
+		if(renderer.gwtGetType().equals(type)){//same type no need to switch
 			return;
 		}
 		focusPanel.clear();
@@ -91,6 +92,8 @@ public class Main implements EntryPoint {
 			renderer = THREE.CSS3DRenderer();
 		}else if(type.equals("webgl")){
 			renderer=THREE.WebGLRenderer();
+			//renderer.set tod aliase
+			renderer.setClearColor(0xffffff, 1);//what? TODO set color
 		}else{//canvas
 			renderer=THREE.CanvasRenderer();
 		}
@@ -129,6 +132,7 @@ public class Main implements EntryPoint {
 		
 		scene = THREE.Scene();
 		objRoot=THREE.Object3D();
+		
 		objRoot.setPosition(-width/2, 0, 0);
 		scene.add(objRoot);
 		
@@ -147,8 +151,8 @@ public class Main implements EntryPoint {
 		
 		
 		//camera.getRotation().setZ(Math.toRadians(180)); //fliphorizontaled
-		renderer = THREE.CSS3DRenderer();
-		renderer.gwtSetType("css3d");
+		renderer = THREE.CanvasRenderer();
+		renderer.gwtSetType("canvas");
 		renderer.setSize(width, height);
 		
 		
@@ -185,12 +189,15 @@ public class Main implements EntryPoint {
 				switchRenderer("canvas");
 			}
 		});
+		
+		/* commentout 
 		main.getCss3dButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				switchRenderer("css3d");
 			}
 		});
+		*/
 		
 		/*
 		canvas = Canvas.createIfSupported();
@@ -307,6 +314,8 @@ Button init=new Button("Restart",new ClickHandler() {
 		
 		objRoot=THREE.Object3D();
 		objRoot.setPosition(-width/2, 0, 0);
+		
+		
 		scene.add(objRoot);
 		
 		scene.add(light);	
@@ -377,6 +386,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		Object3D obj=threeObjects.get(body);
 		if(obj==null){
 		Canvas bodyCanvas=createBodyCanvas(body,"#800",true);
+		//RootPanel.get().add(bodyCanvas);
 		obj=createCanvasObject(bodyCanvas,bodyCanvas.getCoordinateSpaceWidth(),bodyCanvas.getCoordinateSpaceHeight());
 		threeObjects.put(body, obj);
 		//LogUtils.log("create object:"+bodyCanvas.getCoordinateSpaceWidth()+","+bodyCanvas.getCoordinateSpaceHeight());
@@ -391,10 +401,12 @@ Button init=new Button("Restart",new ClickHandler() {
 	private Object3D createColorCircleObject(int r,int g,int b,double alpha,int radius,boolean stroke){
 		Object3D object;
 		Canvas canvas=CanvasUtils.createCircleImageCanvas(r, g, b, alpha, (int)(radius), 3,stroke);
+		//test
+		
 		Texture texture=THREE.Texture(canvas.getCanvasElement());
 		texture.setNeedsUpdate(true);
-		if(!renderer.gwtGetType().equals("css3d")){
-			MeshBasicMaterialBuilder basicMaterial=MeshBasicMaterialBuilder.create().map(texture);
+		if(!renderer.gwtGetType().equals("css3d")){//webgl and canvas
+			MeshBasicMaterialBuilder basicMaterial=MeshBasicMaterialBuilder.create().color(0xff0000).map(texture).transparent(true).side(THREE.Side.FrontSide());
 			object=THREE.Mesh(THREE.PlaneGeometry(radius*2, radius*2), 
 					basicMaterial.build());
 		}else{
@@ -409,7 +421,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		Texture texture=THREE.Texture(canvas.getCanvasElement());
 		texture.setNeedsUpdate(true);
 		if(!renderer.gwtGetType().equals("css3d")){
-			MeshBasicMaterialBuilder basicMaterial=MeshBasicMaterialBuilder.create().map(texture);
+			MeshBasicMaterialBuilder basicMaterial=MeshBasicMaterialBuilder.create().map(texture).transparent(true);
 			object=THREE.Mesh(THREE.PlaneGeometry(w, h), 
 					basicMaterial.build());
 		}else{
@@ -507,7 +519,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		//LogUtils.log("canvas created:"+canvas.getCoordinateSpaceWidth()+","+canvas.getCoordinateSpaceHeight());
 		
 		Context2d context=canvas.getContext2d();
-		context.setLineWidth(2);
+		context.setLineWidth(3);
 		context.setFillStyle("#eee");
 		//context.fillRect(0, 0, canvas.getCoordinateSpaceWidth(), canvas.getCoordinateSpaceHeight());
 		for(Fixture fixture=body.getFixtureList();fixture!=null;fixture=fixture.getNext()){
@@ -533,6 +545,7 @@ Button init=new Button("Restart",new ClickHandler() {
 				
 				context.closePath();
 				if(stroke){
+					
 					context.setStrokeStyle(style);
 					context.stroke();
 				}else{

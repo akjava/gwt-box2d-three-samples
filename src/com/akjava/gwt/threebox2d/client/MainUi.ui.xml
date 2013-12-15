@@ -15,7 +15,7 @@ xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b="urn:import:com.githu
 <b:ButtonGroup toggle="radio" ui:field="renderer">
     <b:Button ui:field="webglButton">WebGL</b:Button>
     <b:Button ui:field="canvasButton">Canvas</b:Button>
-    <b:Button ui:field="css3dButton">Css3D</b:Button>
+    <!--b:Button ui:field="css3dButton">Css3D</b:Button-->
 </b:ButtonGroup>
 </b:Nav>
 <b:Nav>

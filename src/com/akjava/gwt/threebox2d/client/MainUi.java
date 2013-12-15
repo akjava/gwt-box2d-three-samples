@@ -23,7 +23,7 @@ public class MainUi extends Composite  {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		
-		final Button b=(Button) renderer.getWidget(2);//css3d is default
+		final Button b=(Button) renderer.getWidget(1);//canvas is default
 		b.getElement().addClassName("active");// newer bootstrap support it
 		b.addClickHandler(new ClickHandler() {
 			@Override
@@ -48,16 +48,18 @@ public VerticalPanel getCenter() {
 	return center;
 }
 @UiField 
-Button webglButton,canvasButton,css3dButton;
+Button webglButton,canvasButton;//,css3dButton;
 public Button getWebglButton() {
 	return webglButton;
 }
 public Button getCanvasButton() {
 	return canvasButton;
 }
+/*
 public Button getCss3dButton() {
 	return css3dButton;
 }
+*/
 @UiField 
 HorizontalPanel buttons;
 public HorizontalPanel getButtons() {
