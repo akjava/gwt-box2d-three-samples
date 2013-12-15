@@ -26,7 +26,7 @@ import com.akjava.gwt.three.client.js.THREE;
 import com.akjava.gwt.three.client.js.cameras.Camera;
 import com.akjava.gwt.three.client.js.core.Object3D;
 import com.akjava.gwt.three.client.js.lights.Light;
-import com.akjava.gwt.three.client.js.materials.MeshBasicMaterialBuilder;
+import com.akjava.gwt.three.client.js.materials.MeshBasicMaterialParameter;
 import com.akjava.gwt.three.client.js.renderers.WebGLRenderer;
 import com.akjava.gwt.three.client.js.scenes.Scene;
 import com.akjava.gwt.three.client.js.textures.Texture;
@@ -53,7 +53,6 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -398,6 +397,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		obj.getRotation().setZ(-body.getAngle());
 		
 	}
+	/*
 	private Object3D createColorCircleObject(int r,int g,int b,double alpha,int radius,boolean stroke){
 		Object3D object;
 		Canvas canvas=CanvasUtils.createCircleImageCanvas(r, g, b, alpha, (int)(radius), 3,stroke);
@@ -406,24 +406,23 @@ Button init=new Button("Restart",new ClickHandler() {
 		Texture texture=THREE.Texture(canvas.getCanvasElement());
 		texture.setNeedsUpdate(true);
 		if(!renderer.gwtGetType().equals("css3d")){//webgl and canvas
-			MeshBasicMaterialBuilder basicMaterial=MeshBasicMaterialBuilder.create().color(0xff0000).map(texture).transparent(true).side(THREE.Side.FrontSide());
 			object=THREE.Mesh(THREE.PlaneGeometry(radius*2, radius*2), 
-					basicMaterial.build());
+					THREE.MeshBasicMaterial(MeshBasicMaterialParameter.create().map(texture).transparent(true)));
 		}else{
 			Image img=new Image(canvas.toDataUrl());
 			object=CSS3DObject.createObject(img.getElement());
 		}
 		return object;
 	}
+	*/
 	
 	private Object3D createCanvasObject(Canvas canvas,int w,int h){
 		Object3D object;
 		Texture texture=THREE.Texture(canvas.getCanvasElement());
 		texture.setNeedsUpdate(true);
 		if(!renderer.gwtGetType().equals("css3d")){
-			MeshBasicMaterialBuilder basicMaterial=MeshBasicMaterialBuilder.create().map(texture).transparent(true);
 			object=THREE.Mesh(THREE.PlaneGeometry(w, h), 
-					basicMaterial.build());
+					THREE.MeshBasicMaterial(MeshBasicMaterialParameter.create().map(texture).transparent(true)));
 		}else{
 			VerticalPanel v=new VerticalPanel();
 			v.setSize(w+"px", h+"px");
@@ -434,7 +433,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		}
 		return object;
 	}
-	
+	/*
 	private Object3D createColorRectObject(int r,int g,int b,double alpha,int width,int height){
 		Object3D object;
 		if(!renderer.gwtGetType().equals("css3d")){
@@ -448,7 +447,7 @@ Button init=new Button("Restart",new ClickHandler() {
 		}
 		return object;
 	}
-	
+	*/
 	
 
 	
@@ -476,8 +475,8 @@ Button init=new Button("Restart",new ClickHandler() {
 	
 
 	public void drawShape(Body body){
-		Canvas bodyCanvas=createBodyCanvas(body,"#800",true);
-		Vec2 pos=body.getPosition();
+		//Canvas bodyCanvas=createBodyCanvas(body,"#800",true);
+		//Vec2 pos=body.getPosition();
 		//canvas.getContext2d().drawImage(bodyCanvas.getCanvasElement(), pos.x-(float)bodyCanvas.getCoordinateSpaceWidth()/2, pos.y-(float)bodyCanvas.getCoordinateSpaceHeight()/2);
 	}
 	
