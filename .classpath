@@ -8,9 +8,9 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gwtbox2d_playn_by_akjava.com_1212009.jar"/>
-	<classpathentry kind="lib" path="lib/akjavathreegwt_121208.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-bootstrap-2.0.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/akjavastatgwt_120820.jar"/>
-	<classpathentry kind="lib" path="lib/akjavalibgwt_121210.jar"/>
+	<classpathentry kind="lib" path="lib/akjavalibgwt-dep_131220.jar"/>
+	<classpathentry kind="lib" path="lib/akjavathreegwt_131220.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
